@@ -19,7 +19,11 @@ using namespace boost::numeric::ublas;
 //const int NEURONS = 200;
 //const int PATTERNS = 30;
 //const int TRIALS = 30;
+#ifndef UPPG2
 const bool reflexive = false;
+#else
+const bool reflexive = true;
+#endif
 boost::variate_generator<RNGType,boost::uniform_smallint<> > * gen;
 
 void doTrials(int NEURONS, int PATTERNS, int TRIALS);
