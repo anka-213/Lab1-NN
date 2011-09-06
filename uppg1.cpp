@@ -10,7 +10,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random.hpp>
 
-//#define NDEBUG
+#define NDEBUG
 
 //using namespace std;
 using namespace boost::numeric::ublas;
