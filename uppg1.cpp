@@ -1,49 +1,4 @@
-#include <iostream>
-#include <valarray>
-#include <cstdlib>
-#include <ctime>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/random/uniform_smallint.hpp>
-#include <boost/random/linear_congruential.hpp>
-#include <boost/random/variate_generator.hpp>
-#include <boost/random.hpp>
-
-#define NDEBUG
-
-//using namespace std;
-using namespace boost::numeric::ublas;
-	typedef boost::mt19937 RNGType;
-
-//const int NEURONS = 200;
-//const int PATTERNS = 30;
-//const int TRIALS = 30;
-#ifndef UPPG2
-const bool reflexive = false;
-#else
-const bool reflexive = true;
-#endif
-boost::variate_generator<RNGType,boost::uniform_smallint<> > * gen;
-
-void doTrials(int NEURONS, int PATTERNS, int TRIALS);
-int doTrial(int NEURONS, int PATTERNS);
-
-int sign(double x) {
-	if (x > 0) {
-		return 1;
-	} else if (x < 0) {
-		return -1;
-	
-	} else { // if x = 0 (rare) interpret it as negative
-		std::cout << "Zero" << std::endl;
-		return 1;
-	}
-}
-
-int random_plusminus_one() {
-	return 2 *((*gen)()) - 1;
-}
+#include "uppg1.hpp"
 
 
 int main() {
@@ -90,6 +45,8 @@ int doTrial(int NEURONS, int PATTERNS) {
 		}
 	}
 	
+// weight[i][i] = 0;
+// weight[i][j] = 1.0/NEURONS * (sum over PATTERNS mu (pattern[i][mu] * pattern[j][mu]));
 	for (int i = 0; i < NEURONS; i++) {
 		for (int j = 0; j < NEURONS; j++) {
 			if (i == j && ! reflexive) {
@@ -129,5 +86,17 @@ int doTrial(int NEURONS, int PATTERNS) {
 	return fail;
 }
 
-// weight[i][i] = 0;
-// weight[i][j] = 1.0/NEURONS * (sum over PATTERNS mu (pattern[i][mu] * pattern[j][mu]));
+
+
+int sign(double x) {
+	if (x > 0) { // if x = 0 (rare) interpret it as negative
+		return 1;
+	} else if (x < 0) {
+		return -1;
+	}
+}
+
+int random_plusminus_one() {
+	return 2 *((*gen)()) - 1;
+}
+
