@@ -1,6 +1,5 @@
 #include "uppg1.hpp"
 
-
 int main() {
 	RNGType rng(std::time(0));         // produces randomness out of thin air
 					    // see pseudo-random number generators
@@ -38,13 +37,9 @@ int doTrial(int NEURONS, int PATTERNS) {
 
 
 	// Store random patterns
-	for (int mu = 0; mu < PATTERNS; mu++) {
-		for (int i = 0; i < NEURONS; i++) {
-			pattern(i, mu) = random_plusminus_one();
-		//	std::cout << "Pattern[" << i << "][" << mu << "] = " << pattern[i][mu] << std::endl;
-		}
-	}
+	generate_random_patterns(pattern, gen);
 	
+	//weight = prod(pattern, trans(pattern));
 // weight[i][i] = 0;
 // weight[i][j] = 1.0/NEURONS * (sum over PATTERNS mu (pattern[i][mu] * pattern[j][mu]));
 	for (int i = 0; i < NEURONS; i++) {
@@ -58,7 +53,6 @@ int doTrial(int NEURONS, int PATTERNS) {
 				}
 				weight(i, j) = sum;
 			}
-		//	std::cout << "Weight[" << i << "][" << j << "] = " << (float) weight[i][j]/PATTERNS << std::endl;
 		}
 	}
 
@@ -88,15 +82,4 @@ int doTrial(int NEURONS, int PATTERNS) {
 
 
 
-int sign(double x) {
-	if (x > 0) { // if x = 0 (rare) interpret it as negative
-		return 1;
-	} else if (x < 0) {
-		return -1;
-	}
-}
-
-int random_plusminus_one() {
-	return 2 *((*gen)()) - 1;
-}
 
