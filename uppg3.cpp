@@ -20,9 +20,9 @@ int main() {
 	int patterns = 40;
 	#endif
 	double betainv = 0.5;
-	std::cout << "N\tp\tP_fail" << std::endl;
-	for (int i = 0; i < 1; i++) {
-		doTrial(neurons,patterns, betainv,1000);
+	for (int i = 0; i < 100; i++) {
+		std::cout << "Trial nr " << i << std::endl;
+		doTrial(neurons,patterns, betainv,6000);
 	}
 	// monitor m1(t)
 }
@@ -74,7 +74,7 @@ int doTrial(int neurons, int patterns, double betainv, int tmax) {
 			sum1 += pattern(i, 0) * state(i);
 		}
 		double m_1 = (double) sum1 / neurons; 
-		std::cout << neuron_nr << "\t" << m_1 << std::endl;
+		std::cout  << m_1 << std::endl;
 		
 		
 		// state[neuron_nr] = sign(sum over neurons j (weight[neuron_nr][j]*state[j] / patterns) - threshold[neuron_nr])
@@ -106,6 +106,9 @@ double rand_sign(double b, double betainv) {
 	
 	double rnd = generator();
 	//std::cout << "b = " << b << ", rnd = " << rnd << ", g = " << g << std::endl;
+	// if (rnd<g) {
+	// 	std::cout << "Flipped a bit" << std::endl;
+	// }
 	return (rnd < g)?1:-1;
 }
 
