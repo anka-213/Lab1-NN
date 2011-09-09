@@ -21,7 +21,7 @@ int main() {
 	#endif
 	double betainv = 0.5;
 	for (int i = 0; i < 100; i++) {
-		std::cout << "Trial nr " << i << std::endl;
+		std::cout << std::endl;
 		doTrial(neurons,patterns, betainv,6000);
 	}
 	// monitor m1(t)
@@ -74,7 +74,7 @@ int doTrial(int neurons, int patterns, double betainv, int tmax) {
 			sum1 += pattern(i, 0) * state(i);
 		}
 		double m_1 = (double) sum1 / neurons; 
-		std::cout  << m_1 << std::endl;
+		std::cout  << m_1  << "\t";
 		
 		
 		// state[neuron_nr] = sign(sum over neurons j (weight[neuron_nr][j]*state[j] / patterns) - threshold[neuron_nr])
