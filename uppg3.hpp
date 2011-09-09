@@ -20,7 +20,6 @@ const bool reflexive = false;
 
 RandomGenerator * gen;
 
-int doTrial(int neurons, int patterns, double betainv, int tmax);
-int doIteration(int NEURONS, int PATTERNS);
+void doTrial(int neurons, int patterns, double betainv, int tmax);
 double rand_sign(double b, double betainv);
 

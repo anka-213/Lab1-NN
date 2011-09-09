@@ -5,13 +5,6 @@
 RNGType * rng;
 
 int main() {
-	rng = new RNGType(std::time(0));         // produces randomness out of thin air
-					    // see pseudo-random number generators
-	boost::uniform_smallint<> zero_or_one(0,1);
-					    // distribution that maps to 1..6
-					    // see random number distributions
-	gen = new boost::variate_generator<RNGType,boost::uniform_smallint<> > (*rng,zero_or_one);
-	
 	int neurons = 200;
 	#ifdef five
 	int patterns = 5;
@@ -20,14 +13,20 @@ int main() {
 	int patterns = 40;
 	#endif
 	double betainv = 0.5;
+
+	// Initiate random generator
+	rng = new RNGType(std::time(0));
+	boost::uniform_smallint<> zero_or_one(0,1);
+	gen = new boost::variate_generator<RNGType,boost::uniform_smallint<> > (*rng,zero_or_one);
+	
+	// Main loop
 	for (int i = 0; i < 100; i++) {
 		std::cout << std::endl;
 		doTrial(neurons,patterns, betainv,6000);
 	}
-	// monitor m1(t)
 }
 
-int doTrial(int neurons, int patterns, double betainv, int tmax) {
+void doTrial(int neurons, int patterns, double betainv, int tmax) {
 	matrix<int> weight (neurons, neurons);
 	vector<int> state (neurons);		 // Values -1 or 1
 	matrix<int> pattern (neurons, patterns); // Values -1 or 1
@@ -38,9 +37,7 @@ int doTrial(int neurons, int patterns, double betainv, int tmax) {
 	// Store random patterns
 	generate_random_patterns(pattern, gen);
 	
-	//weight = prod(pattern, trans(pattern));
-// weight[i][i] = 0;
-// weight[i][j] = 1.0/neurons * (sum over patterns mu (pattern[i][mu] * pattern[j][mu]));
+	//weight = prod(pattern, trans(pattern)) - neurons * identityMatrix(neurons);
 	for (int i = 0; i < neurons; i++) {
 		for (int j = 0; j < neurons; j++) {
 			if (i == j) {
@@ -55,16 +52,14 @@ int doTrial(int neurons, int patterns, double betainv, int tmax) {
 		}
 	}
 
-	// Our problem is symmetric, we can assume without loss
-	// of generality that the first pattern is selected.
+	// Copy the first pattern to the state
 	int mu = 0;
 	for (int i = 0; i < neurons; i++) {
 		state(i) = pattern(i, mu); 
 	}
-	//state(0) = -state(0);
 
 	for (int t=0; t<tmax ;t++) {
-		//Pick random i
+		// Pick random neuron i
 		boost::uniform_smallint<> random_neuron(0,neurons-1);
 		int neuron_nr = random_neuron(*rng);
 	
@@ -75,41 +70,24 @@ int doTrial(int neurons, int patterns, double betainv, int tmax) {
 		}
 		double m_1 = (double) sum1 / neurons; 
 		std::cout  << m_1  << "\t";
-		
-		
-		// state[neuron_nr] = sign(sum over neurons j (weight[neuron_nr][j]*state[j] / patterns) - threshold[neuron_nr])
+
+		// Calculate new value for neuron
 		int sum = 0;
 		for (int j = 0; j < neurons; j++) {
 			sum += weight(neuron_nr, j) * state(j);
 		}
 		state(neuron_nr) = rand_sign((double) sum/neurons,betainv);
-		//std::cout << "sum = " << sum << std::endl;
-
-		//state(neuron_nr) = g
-	
 	}
-
-	//int fail = (state(i) != result)?1:0;
-	//return fail;
-	return 0;
 }
 
-
+// A sign function with random noise
+// Sometimes it returns the opposite sign, depending on size of b and beta
 double rand_sign(double b, double betainv) {
- 
-	
-	double g = 1 / (1 + exp(-2 * b / betainv ));
-
-	//double probabilities[] = { 1-g, g };
 	boost::uniform_01<> dist;
 	boost::variate_generator<RNGType,boost::uniform_01<> > generator(*rng,dist);
-	
-	double rnd = generator();
-	//std::cout << "b = " << b << ", rnd = " << rnd << ", g = " << g << std::endl;
-	// if (rnd<g) {
-	// 	std::cout << "Flipped a bit" << std::endl;
-	// }
-	return (rnd < g)?1:-1;
+	double g = 1 / (1 + exp(-2 * b / betainv ));
+
+	return (generator() < g)?1:-1;
 }
 
 
