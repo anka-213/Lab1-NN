@@ -22,7 +22,7 @@ int main() {
 	// Main loop
 	for (int i = 0; i < 100; i++) {
 		std::cout << std::endl;
-		doTrial(neurons,patterns, betainv,6000);
+		doTrial(neurons,patterns, betainv,10000);
 	}
 }
 
@@ -30,9 +30,6 @@ void doTrial(int neurons, int patterns, double betainv, int tmax) {
 	matrix<int> weight (neurons, neurons);
 	vector<int> state (neurons);		 // Values -1 or 1
 	matrix<int> pattern (neurons, patterns); // Values -1 or 1
-	//double weight[neurons][neurons];
-	//int state[neurons];
-	//int pattern[neurons][patterns];
 
 	// Store random patterns
 	generate_random_patterns(pattern, gen);
