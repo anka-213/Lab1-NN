@@ -6,8 +6,10 @@
 using namespace boost::numeric::ublas;
 
 typedef boost::mt19937 RNGType;
-typedef boost::variate_generator<RNGType,boost::uniform_smallint<> > RandomGenerator;
+typedef boost::variate_generator<RNGType, 
+	boost::uniform_smallint<> > RandomGenerator;
 
 int sign(double x);
 int random_plusminus_one(RandomGenerator *gen);
-void generate_random_patterns(matrix<int> &pattern, RandomGenerator *gen);
+void generate_random_patterns(matrix<int> &pattern,
+			      RandomGenerator *gen);

@@ -10,7 +10,9 @@ plot([meanCurve40', meanCurve5'])
 axis([0 maxT 0 1])
 xlabel('Time t')
 ylabel('Order parameter m_1')
-legend('Mean value of 100 simulations with p = 40','Mean value of 100 simulations with p = 5', 'Location', 'East')
+legend('Mean value of 100 simulations with p = 40',
+       'Mean value of 100 simulations with p = 5',
+       'Location', 'East')
 
 figure(2)
 plot(uppg3_5');
