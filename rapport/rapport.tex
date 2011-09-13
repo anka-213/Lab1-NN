@@ -2,8 +2,9 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[swedish]{babel}
+\usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{listings}
 \usepackage{ae}
 \usepackage{units}
 \usepackage{icomma}
@@ -25,12 +26,6 @@
 \author{Andreas Källberg}
 \date{\today}
 \maketitle
-
-\begin{abstract}
-
-\end{abstract}
-
-\newpage
 \tableofcontents
 \newpage
 
@@ -60,7 +55,7 @@ will be used and have to be calculated.
 
 In each iteration of the main loop random values, uniformly distributed
 ($50<N<200$, $5<p<100$), of $p$ and $N$ are picked.  For each such pair, a
-fixed number of trials ($\approx 300$) is done, then the mean fail-rate
+fixed number of trials ($\approx 500$) is done, then the mean fail-rate
 ($\approx P_{Error}(p/N)$) is calculated and printed together with the
 current values of $p$ and $N$ to the standard output. This allows for easy
 parallelization of the simulation, no synchronization is needed since all
@@ -71,7 +66,7 @@ We now have a large file with rows consisting of: $N$ \textbackslash{}t $p$ \tex
 \subsubsection{In Matlab} \label{inMatlab1}
 
 From this a matrix with columns $p/N$ and $P_{Error}$ is created and then
-sorted by $p/N$. To further\footnote{In addition to the 300 trials per point}
+sorted by $p/N$. To further\footnote{In addition to the 500 trials per point}
 smoothen out the curve and remove noise, each point is replaced by their mean
 values with their two neighbours, for both $p/N$ and $P_{Error}$. This is
 repeated until the curve is sufficiently smooth\footnote{I believe this is a
@@ -92,33 +87,46 @@ is shown, where Figure \ref{uppg1_smooth} is a smoothed out (see above)
 version of \ref{uppg1}. The blue curve shows the result of the simulation
 and the green curve shows the theoretical values as per \eqref{theoretical1}.
 
+As we can see, the results seem to match the theory really well. (Boring?)
+
 \begin{figure}\centering
 \includegraphics[width=12cm]{uppg1.pdf}
-\caption{\label{uppg1} A plot of the result of problem 1, where weights $w_{ii} =
-0$. The value $P_{Error}$ is the probability that a neuron is incorrectly
-flipped on the first iteration of the Neural Network.  The value $p$ is the
-number of \emph{random patterns} stored in the network and $N$ is the number
-of neurons. The green line is the theoretical values.}
+\caption{\label{uppg1} A plot of the result of problem 1, based on 7571
+points of data, where weights $w_{ii} = 0$. The value $P_{Error}$ is the
+probability that a neuron is incorrectly flipped on the first iteration of
+the Neural Network.  The value $p$ is the number of \emph{random patterns}
+stored in the network and $N$ is the number of neurons. The green line is
+the theoretical values.}
 \end{figure}
 
 \begin{figure}\centering
 \includegraphics[width=12cm]{uppg1_smooth.pdf}
-\caption{\label{uppg1_smooth} The same data as Figure \ref{uppg1} smoothed out using the method described in section \ref{inMatlab1} .}
+\caption{\label{uppg1_smooth} The same data as Figure \ref{uppg1} smoothed out using the method described in section \ref{inMatlab1}, so in the end it is based on 200 fewer data points.}
 \end{figure}
 
 
 \subsubsection{Limitations}
 
-Limited interval
-Non-uniformly distributed measurements
-No "confidence-interval"
+The simulation was done in a limited range for both $p$, $N$ and $p/N$, so if there is any significantly different trends outside these intervals, we cannot see them.
+
+Furthermore, since the random samples was generated uniformly distributed over $p$ and $N$, the resolution is not the same everywhere in the plots. In particular, the borders are especially low-res. On the other hand, we have used ridiculously many samples, so this should not matter.
+
+As a smooth representation of the data points, a spline might have been better. I have not yet tested this.
 
 \subsection{Code}
+ 
+\begin{verbatim}
+$ g++ -o uppg1 uppg1.cpp nn_common.cpp
+$ ./uppg1 >> uppg1_new
+$ matlab -r uppg1
+\end{verbatim}
 
 \section{Deterministic Hopfield model continued}
+
 \subsection{Problem}
 This is the same problem as in section \ref{dhm} except that now the Hebb
 rule is used for all $w_{ij}$ including $i = j$.
+
 \subsection{Approach}
 The approach for this problem is identical to the one used for problem 1,
 except that the code that sets weights $w_{ii}$ to zero is
@@ -127,15 +135,27 @@ not significantly different.}
 
 In this case, the theoretical value of $P_{Error}$ is
 \begin{equation} \label{theoretical2}
-P_{Error} = \frac{1}{2} \operatorname{erfc}(\frac{1 - \frac{p}{N}}{\sqrt{2 \frac{p}{N}}}).
+P_{Error} = \frac{1}{2} \operatorname{erfc}(\frac{1 + \frac{p}{N}}{\sqrt{2 \frac{p}{N}}}).
 \end{equation}
 The deduction of \eqref{theoretical2} is based on the
-calculation for $w_{ii} = 0$ and can be seen in detail in Appendix A.
+calculation for $w_{ii} = 0$ and can be seen in detail in Appendix B.
+
 \subsection{Result and discussion}
 The results of this simulation is seen figures \ref{uppg2} and
 \ref{uppg2_smooth}. As above Figure \ref{uppg2_smooth} is a smoothed out
 version of \ref{uppg2}, and the blue curves shows the result of the
 simulations and the green curve shows the theoretical values.
+
+Once again the theory matches the experiments very good. However, this time
+the theoretical values seems to slightly overestimate the experimental
+result. This may be due to the assumption that $p$ is sufficiently large, so
+$\frac{p-1}{N} \approx \frac{p}{N}$. The more exact formula for small $p$ would (as expected) generate smaller values.
+
+As we can see the figures we have a much lower value of $P_{Error}$ in this
+case then when $w_{ii} =0$. This does not say anything about the long-term
+result though. Another interesting property is that after a certain point
+the error probability actually decreases. This does not say anything about
+long term probability either.
 
 \begin{figure}\centering
 \includegraphics[width=12cm]{uppg2.pdf}
@@ -152,6 +172,12 @@ the number of neurons. The green line is the theoretical values.}
 \end{figure}
 
 \subsection{Code}
+
+\begin{verbatim}
+$ g++ -o uppg2 -DUPPG2 uppg1.cpp nn_common.cpp
+$ ./uppg2 >> uppg2_new
+$ matlab -r uppg2
+\end{verbatim}
 
 \section{Stochastic Hopfield model}
 \subsection{Problem}
@@ -172,7 +198,7 @@ $$ g(b) = \frac{1}{1 + \operatorname{e}^{-2 \beta b}}. $$
 \subsubsection{In C++}
 The code starts by initialize the patterns randomly.
 Then on each timestep the value of $m_1$ is printed out to standard output
-followed by a tab. This is done for 6000 timesteps, and then a newline is
+followed by a tab. This is done for 10000 timesteps, and then a newline is
 appended. This whole process is then repeated 100 times.
 
 \subsubsection{In MATLAB}
@@ -180,6 +206,11 @@ First the result for both $p=5$ and $p=40$ is imported, then the mean over
 all simulations is taken per timestep and value of $p$. Then both results are plotted.
 
 \subsection{Result and discussion}
+In the green curve in Figure \ref{uppg3} and in Figure \ref{uppg3_5}
+we can see that the process is very stable for $p=5$, you can see that
+$\lim_{t \to \infty} m_1(t) \approx 1$. This is \emph{not} the case for $p
+= 40$ (Blue curve in Figure \ref{uppg3} and Figure \ref{uppg3_40}). In this case we it seems more like $\lim_{t \to \infty} m_1(t) \approx 0$.
+
 \begin{figure}\centering
 \includegraphics[width=\textwidth]{uppg3.pdf}
 \caption{\label{uppg3} Plot of the mean value over 100 simulations of the
@@ -188,20 +219,70 @@ a stochastic Hopfield model, with the number of neuron $N = 200$, the
 noise level $\beta^{-1} = 0.5$ and the number of patterns $p = 40$ and $p=5$
 respectively. All the patterns are randomized and the network is initially fed with pattern 1. }
 \end{figure}
+
+\begin{figure}\centering
+\includegraphics[width=\textwidth]{uppg3_5.pdf}
+\caption{\label{uppg3_5} Plot of 100 simulations of the
+order parameter for the first pattern, $m_1$, as a function of time, using
+a stochastic Hopfield model, with the number of neuron $N = 200$, the
+noise level $\beta^{-1} = 0.5$ and the number of patterns $p=5$ . All the
+patterns are randomized and the network is initially fed with pattern 1. }
+\end{figure}
+\begin{figure}\centering
+\includegraphics[width=\textwidth]{uppg3_40.pdf}
+\caption{\label{uppg3_40} Plot of 100 simulations of the
+order parameter for the first pattern, $m_1$, as a function of time, using
+a stochastic Hopfield model, with the number of neuron $N = 200$, the
+noise level $\beta^{-1} = 0.5$ and the number of patterns $p=40$ . All the
+patterns are randomized and the network is initially fed with pattern 1. }
+\end{figure}
 \subsection{Code}
 
+\begin{verbatim}
+$ g++ -Dforty  uppg3.cpp nn_common.cpp -o uppg3_40 
+$ g++ -Dfive  uppg3.cpp nn_common.cpp -o uppg3_5
+$ ./uppg3_40 > uppg3_40.data
+$ ./uppg3_5 > uppg3_5.data
+$ matlab -r uppg3
+\end{verbatim}
 
-% Figurer inkluderade som eps-filer
-%% \begin{figure}\centering
-%% \includegraphics{filnamn.eps}
-%% \caption{\label{figuren} Perioden $T$ som funktion av pendellängden.}
-%% \end{figure}
+\newpage
 
-% Figurer inkluderade med xfigs postscript+latex
-%% \begin{figure}\centering
-%% \input{filnamn.pstex_t}
-%% \caption{\label{finafiguren} Perioden $T$ som funktion av
-%%   pendellängden.}
-%% \end{figure}
+\appendix
+
+\section{Source code}
+
+\subsection{C++}
+
+\subsubsection{uppg1.cpp}
+\lstinputlisting{../uppg1.cpp}
+
+\subsubsection{uppg1.hpp}
+\lstinputlisting{../uppg1.hpp}
+
+\subsubsection{uppg3.cpp}
+\lstinputlisting{../uppg3.cpp}
+
+\subsubsection{uppg3.hpp}
+\lstinputlisting{../uppg3.hpp}
+
+\subsubsection{nn\_common.cpp}
+\lstinputlisting{../nn_common.cpp}
+
+\subsubsection{nn\_common.hpp}
+\lstinputlisting{../nn_common.hpp}
+
+\subsection{MATLAB}
+
+\subsubsection{uppg1.m}
+\lstinputlisting{../uppg1.m}
+
+\subsubsection{uppg2.m}
+\lstinputlisting{../uppg2.m}
+
+
+\subsubsection{uppg3.m}
+\lstinputlisting{../uppg3.m}
+
 
 \end{document}

@@ -1,0 +1,34 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Deterministic Hopfield model}{3}
+\contentsline {subsection}{\numberline {1.1}Problem}{3}
+\contentsline {subsection}{\numberline {1.2}Approach}{3}
+\contentsline {subsubsection}{\numberline {1.2.1}General choices}{3}
+\contentsline {subsubsection}{\numberline {1.2.2}In C++}{3}
+\contentsline {subsubsection}{\numberline {1.2.3}In Matlab}{3}
+\contentsline {subsection}{\numberline {1.3}Result and discussion}{4}
+\contentsline {subsubsection}{\numberline {1.3.1}Limitations}{6}
+\contentsline {subsection}{\numberline {1.4}Code}{6}
+\contentsline {section}{\numberline {2}Deterministic Hopfield model continued}{6}
+\contentsline {subsection}{\numberline {2.1}Problem}{6}
+\contentsline {subsection}{\numberline {2.2}Approach}{6}
+\contentsline {subsection}{\numberline {2.3}Result and discussion}{7}
+\contentsline {subsection}{\numberline {2.4}Code}{8}
+\contentsline {section}{\numberline {3}Stochastic Hopfield model}{8}
+\contentsline {subsection}{\numberline {3.1}Problem}{8}
+\contentsline {subsection}{\numberline {3.2}Approach}{9}
+\contentsline {subsubsection}{\numberline {3.2.1}In C++}{9}
+\contentsline {subsubsection}{\numberline {3.2.2}In MATLAB}{9}
+\contentsline {subsection}{\numberline {3.3}Result and discussion}{9}
+\contentsline {subsection}{\numberline {3.4}Code}{9}
+\contentsline {section}{\numberline {A}Source code}{13}
+\contentsline {subsection}{\numberline {A.1}C++}{13}
+\contentsline {subsubsection}{\numberline {A.1.1}uppg1.cpp}{13}
+\contentsline {subsubsection}{\numberline {A.1.2}uppg1.hpp}{15}
+\contentsline {subsubsection}{\numberline {A.1.3}uppg3.cpp}{15}
+\contentsline {subsubsection}{\numberline {A.1.4}uppg3.hpp}{18}
+\contentsline {subsubsection}{\numberline {A.1.5}nn\_common.cpp}{18}
+\contentsline {subsubsection}{\numberline {A.1.6}nn\_common.hpp}{19}
+\contentsline {subsection}{\numberline {A.2}MATLAB}{19}
+\contentsline {subsubsection}{\numberline {A.2.1}uppg1.m}{19}
+\contentsline {subsubsection}{\numberline {A.2.2}uppg2.m}{20}
+\contentsline {subsubsection}{\numberline {A.2.3}uppg3.m}{21}
